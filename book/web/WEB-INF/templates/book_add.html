@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/css/my.css"/>
+    <title>添加图书</title>
+</head>
+<body>
+<div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
+    <div class="demo-login-container">
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-name"></i>
+                </div>
+                <input type="text" name="name" id="name" value="" lay-verify="required" placeholder="图书名称" lay-reqtext="请填写图书名称" autocomplete="off" class="layui-input" lay-affix="clear">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-comment"></i>
+                </div>
+                <input type="text" name="comment" id="comment" value="" placeholder="备   注" lay-reqtext="请填写备注" autocomplete="off" class="layui-input" lay-affix="clear">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="add">添加</button>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</body>
+<script src="/layui/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['table', 'dropdown','form'], function() {
+        var table = layui.table;
+        var dropdown = layui.dropdown;
+        var form = layui.form;
+        var $ = layui.$;
+
+        form.on('submit(add)',function(){
+            $.ajax({
+                type: "POST",
+                url: "/books/add?name="+$('#name').val()+"&&comment="+$('#comment').val(),
+                dataType: "json",
+                contentType: "application/json",
+                data: {},
+                success: function (obj) {
+                    layer.msg("添加成功！")
+                    // $('#name').val("");
+                    // $('#comment').val("");
+                    parent.layer.closeAll();
+                },error:function (obj){
+                    layer.msg("添加失败！")
+                }
+            });
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.book.dao.RecordsMapper">
+
+    <insert id="addRecords" parameterType="Records">
+        insert into records (id,userid, bookid, start,end,isreturn)
+        values (null,#{userid},#{bookid},#{start},#{end},#{isreturn});
+    </insert>
+
+    <delete id="deleteRecordsById" parameterType="int">
+        delete from records
+        where id = #{id}
+    </delete>
+
+    <update id="updateRecords" parameterType="Records">
+        update records
+        set userid=#{userid},bookid=#{bookid},start=#{start},end=#{end},isreturn=#{isreturn}
+        where id = #{id} ;
+    </update>
+
+
+    <select id="queryRecordsById" resultType="Records">
+        select * from records
+        where id = #{id}
+    </select>
+
+    <select id="queryAllRecords" resultType="map">
+        select records.id,userid, bookid, start,end,isreturn,books.name as bookName,user.account as userName from records
+            inner join books on books.id=records.bookid
+            inner join user on user.id=records.userid
+        where records.id!=0
+        <if test="userName!=null and userName!=''">
+           and userid in (select user.id from user where user.account like CONCAT('%',#{userName},'%'))
+        </if>
+        <if test="bookName!=null and bookName!=''">
+            and bookid in (select books.id from books where books.name like CONCAT('%',#{bookName},'%'))
+        </if>
+        <if test="isreturn!=3">
+            and isreturn = #{isreturn}
+        </if>
+        <if test="userid!=0">
+            and userid=#{userid}
+        </if>
+    </select>
+
+    <select id="currList" resultType="map">
+        select records.id,userid, bookid, start,end,isreturn,books.name as bookName,user.account as userName from records
+            inner join books on books.id=records.bookid
+            inner join user on user.id=records.userid
+        where isreturn = 0
+        <if test="userName!=null and userName!=''">
+            and userid in (select user.id from user where user.account like CONCAT('%',#{userName},'%'))
+        </if>
+        <if test="bookName!=null and bookName!=''">
+            and bookid in (select books.id from books where books.name like CONCAT('%',#{bookName},'%'))
+        </if>
+        <if test="userid!=0">
+            and userid=#{userid}
+        </if>
+    </select>
+
+    <select id="confirm" resultType="map">
+        select records.id,userid, bookid, start,end,isreturn,books.name as bookName,user.account as userName from records
+        inner join books on books.id=records.bookid
+        inner join user on user.id=records.userid
+        where isreturn = 2
+        <if test="userName!=null and userName!=''">
+            and userid in (select user.id from user where user.account like CONCAT('%',#{userName},'%'))
+        </if>
+        <if test="bookName!=null and bookName!=''">
+            and bookid in (select books.id from books where books.name like CONCAT('%',#{bookName},'%'))
+        </if>
+        <if test="userid!=0">
+            and userid=#{userid}
+        </if>
+    </select>
+
+</mapper>

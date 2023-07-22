@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/css/my.css"/>
+    <title>主页</title>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">图书管理</div>
+        <!-- 个人头像及账号操作 -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                <a href="javascript:;" id="account" th:title="${session.account}">
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/user/logout">注销登录</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="nav">
+                <li class="layui-nav-item layui-nav-itemed"><a src="/books/newBook" >新书推荐</a></li>
+                <li class="layui-nav-item">
+                  <a  src="/user/book">图书借阅</a>
+                </li>
+                <li class="layui-nav-item">
+                  <a href="javascript:;">当前借阅</a>
+                  <dl class="layui-nav-child">
+                    <dd><a src="/records/recordscurr">借阅图书</a></dd>
+                    <dd><a id="return" src="/records/recordsconfirm">确认归还</a></dd>
+                  </dl>
+                </li>
+
+                <li class="layui-nav-item"><a src="/records/records">借阅记录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <iframe frameborder="0" scrolling="yes" style="width:100%;height:100%" src="/books/newBook" id="right"></iframe>
+    </div>
+
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        图书管理系统
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script th:inline="javascript">
+    //JS
+    layui.use(['element', 'layer', 'form'], function () {
+        var $ = layui.$;
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+
+
+        // 渲染导航组件
+        element.render();
+
+        var role = [[${role}]];
+        var account = document.getElementById("account").title;
+
+        if(role!=1){
+            document.getElementById("return").style.display="none";
+        }
+
+        document.getElementById("account").innerText=account;
+
+        element.on("nav(nav)",function (elem) {
+            var address =$(this).attr("src");
+            $("iframe").attr("src",address);
+        })
+    });
+</script>
+</html>

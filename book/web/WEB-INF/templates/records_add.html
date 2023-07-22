@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/css/my.css"/>
+    <title>添加记录</title>
+</head>
+<body>
+<div class="layui-form" lay-filter="filter-test-layer" style="margin: 16px;">
+    <div class="demo-login-container">
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-name"></i>
+                </div>
+                <select type="text" name="userName" id="userName" value="" lay-verify="required" placeholder="借阅人" lay-reqtext="请填写借阅人" autocomplete="off" class="layui-input" lay-affix="clear">
+                    <option value="0" disabled>选择借阅人</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-name"></i>
+                </div>
+                <select type="text" name="selectName" id="selectName" value="" lay-verify="required" placeholder="图书名称" lay-reqtext="请填写图书名称" autocomplete="off" class="layui-input" lay-affix="clear">
+                    <option value="0" disabled>选择图书</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-comment"></i>
+                </div>
+                <input class="layui-input" id="start" type="text" placeholder="借书时间">
+                </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-comment"></i>
+                </div>
+                <input class="layui-input" id="end" type="text" placeholder="还书时间">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-name" style="width: 50px"></i>
+                </div>
+                <select type="text" name="selectName" id="isreturn" value="" lay-verify="required" autocomplete="off" class="layui-input" lay-affix="clear">
+                    <option value="0">未归还</option>
+                    <option value="2">申请归还中</option>
+                    <option value="1">已归还</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-wrap">
+                <div class="layui-input-prefix">
+                    <i class="layui-icon layui-icon-comment"></i>
+                </div>
+                <input type="text" name="comment" id="comment" value="" placeholder="备   注" lay-reqtext="请填写备注" autocomplete="off" class="layui-input" lay-affix="clear">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="add">添加</button>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</body>
+<script src="/layui/layui.js" type="text/javascript"></script>
+<script>
+    layui.use(['table','form','laydate'], function() {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var $ = layui.$;
+
+        laydate.render({
+            elem:'#start'
+        });
+
+        laydate.render({
+            elem:'#end'
+        })
+
+        $.ajax({
+            type: "POST",
+            url: "/books/selectName",
+            dataType: "json",
+            contentType: "application/json",
+            data: {},
+            success: function (obj) {
+                $.each(obj,function (k,v) {
+                    $("#selectName").append(new Option(v.name+"(id:"+v.id+")",v.id))
+                })
+                form.render();
+            },error:function (obj){
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/user/UserName",
+            dataType: "json",
+            contentType: "application/json",
+            data: {},
+            success: function (obj) {
+                $.each(obj,function (k,v) {
+                    $("#userName").append(new Option(v.account,v.id))
+                })
+                form.render();
+            },error:function (obj){
+            }
+        });
+
+        form.on('submit(add)',function(){
+            var userid = $("#userName option:selected").val();
+            var bookid = $("#selectName option:selected").val();
+            var start = $("#start").val();
+            var end = $("#end").val();
+            var isreturn = $("#isreturn option:selected").val();
+            $.ajax({
+                type: "POST",
+                url: "/records/add?userid="+userid+"&&bookid="+bookid+"&&start="+start+"&&end="+end+"&&isreturn="+isreturn,
+                dataType: "json",
+                contentType: "application/json",
+                data: {},
+                success: function (obj) {
+                    layer.msg("添加成功！")
+                    parent.layer.closeAll();
+                    // $('#userName').val("");
+                    // $('#selectName').val("");
+                    // $('#start').val("");
+                    // $('#end').val("");
+                    // $('#isreturn').val("");
+                },error:function (obj){
+                    layer.msg("添加失败！")
+                }
+            });
+        })
+    })
+</script>
+</html>

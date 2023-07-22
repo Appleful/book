@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/layui/css/layui.css"/>
+  <title>主页</title>
+</head>
+<body>
+<div class="layui-nav" lay-filter="demo-filter-nav">
+  <li class="layui-nav-item"><a href="javascript:;">菜单1</a></li>
+  <li class="layui-nav-item"><a href="javascript:;">菜单2</a></li>
+</div>
+</body>
+<script  type="text/javascript" src="/layui/layui.js">
+  layui.use(function(){
+    var element = layui.element;
+    var layer = layui.layer;
+
+    // 渲染导航组件
+    element.render();
+    // 导航点击事件
+    element.on('nav(demo-filter-nav)', function(elem){
+      console.log(elem); // 得到当前点击的元素 jQuery 对象
+      layer.msg(elem.text());
+    });
+  });
+</script>
+</html>

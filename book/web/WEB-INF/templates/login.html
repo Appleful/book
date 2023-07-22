@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/css/my.css"/>
+    <title>登录</title>
+</head>
+<body>
+<div class="wrap">
+    <img src="../image/img.png" class="imgStyle">
+    <div class="loginForm">
+        <div align="center">
+            <br><br><br><h2>登录</h2><br><br><br>
+        </div>
+        <div id="form-style" align="center">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="account" id="account" lay-verify="title" autocomplete="off"
+                               placeholder="请输入用户名" class="layui-input"/>
+                    </div>
+                </div><br><br>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" id="password" placeholder="请输入密码"
+                               autocomplete="off" class="layui-input"/>
+                    </div>
+                </div><br><br><br>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" align="left">
+                        <button class="layui-btn" style="margin-left: 10px" lay-submit lay-filter="login">
+                            登录
+                        </button>
+                        <button id="register" class="layui-btn layui-btn-primary">注册</button>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+</div>
+<script src="/layui/layui.js" type="text/javascript"></script>
+<script type="text/javascript">
+    layui.use(['jquery', 'layer', 'form'], function () {
+        var $ = layui.$;
+        var layer = layui.layer;
+        var form = layui.form;[]
+        form.on('submit(login)', function (data) {
+            var account = $("#account").val();
+            var password = $('#password').val();
+            if(account.length==0||password.length==0){
+                layer.alert("用户名或密码不能为空！")
+            }else {
+                $.ajax({
+                    type: "POST",
+                    url: "/user/islogin?account="+account+"&password="+password,
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: {},
+                    success: function (obj) {
+                        if(obj=="error"){
+                            alert("用户名或密码错误！")
+                        }else {
+                            window.location.href="/user/login";
+                        }
+                    },error:function (obj){
+                        alert("用户名或密码错误！")
+                    }
+                });
+            }
+        });
+
+        $('#register').click(function () {
+            window.location.href="/user/register";
+        });
+    })
+</script>
+
+</body>
+</html>
